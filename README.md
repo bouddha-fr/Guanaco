@@ -15,4 +15,4 @@ Remonte les informations sur l'état du CPU, de la RAM ainsi que de l'espace de 
 g!disk
 ```
 
-![disk](https://i.imgur.com/SqOy2Jn.png)
+![disk](https://i.imgur.com/OOlHJ7Z.png)

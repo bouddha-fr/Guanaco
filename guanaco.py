@@ -4,12 +4,7 @@ from discord.ext import tasks, commands
 intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix='g!', intents=intents)
-
-@bot.event
-async def on_ready():
-    print(f'{bot.user.name} est connecté.')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="g!cbum"))
-    stats.start()
+photo_raspi = "https://i.imgur.com/xnByQbA.png"
 
 #Permet d'aller chercher l'@publique
 try:
@@ -17,6 +12,12 @@ try:
    public_ip = response.json()['ip']
 except Exception as e:
    public_ip = 'N/A'
+
+@bot.event
+async def on_ready():
+    print(f'{bot.user.name} est connecté.')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="g!cbum"))
+    stats.start()
 
 @bot.command()
 async def cbum(ctx):
@@ -31,6 +32,7 @@ async def disk(ctx):
     for partition in disk_partitions:
         partition_info = psutil.disk_usage(partition.mountpoint)
         bedem = discord.Embed(title='Disque', description=f'Espace disque utilisé pour {partition.mountpoint}', color=0xffad31)
+        bedem.set_thumbnail(url=photo_raspi)
         bedem.add_field(name='Total', value=f'{partition_info.total / (1024*1024*1024):.2f} GB', inline=False)
         bedem.add_field(name='Utilisé', value=f'{partition_info.used / (1024*1024*1024):.2f} GB', inline=False)
         bedem.add_field(name='Free', value=f'{partition_info.free / (1024*1024*1024):.2f} GB', inline=False)
@@ -39,7 +41,6 @@ async def disk(ctx):
 @tasks.loop(hours=1)
 async def stats():
     channel = bot.get_channel(1220667939619864578)
-    photo_raspi = "https://i.imgur.com/xnByQbA.png"
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
