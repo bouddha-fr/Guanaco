@@ -19,3 +19,7 @@ g!disk
 #Récupère les alerts de CrowdSec
 g!csalerts
 ```
+```
+#Récupère les decisions de CrowdSec
+g!csdecisions
+```
