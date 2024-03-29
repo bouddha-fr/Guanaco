@@ -10,7 +10,7 @@ Remonte les informations sur l'état du CPU, de la RAM ainsi que de l'espace de 
 
 ![loop](https://i.imgur.com/TYokAJE.png)
 
-- Commande
+## Commandes
 ```
 #Remonte les informations concernant les disques
 g!disk
