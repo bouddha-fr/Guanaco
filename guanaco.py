@@ -1,6 +1,6 @@
 import discord, psutil, requests, subprocess, os
 from discord.ext import tasks, commands
-from cbum_commands import CBumCommand
+from easteregg import easteregg
 from crowdsec import CrowdSec
 
 intents = discord.Intents.all()
