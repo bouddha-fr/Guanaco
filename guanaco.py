@@ -19,6 +19,13 @@ except Exception as e:
    public_ip = 'N/A'
 
 @bot.command()
+async def cbum(ctx):
+    photo_url = "https://pbs.twimg.com/media/FkCfB1AXwAAO1ae.jpg"
+    bedem = discord.Embed(title='Chris Bumstead', description='Tema la moustache #moustache #idolemoustache', color=0xff4c4c)
+    bedem.set_image(url=photo_url)
+    await ctx.send(embed=bedem)
+
+@bot.command()
 async def disk(ctx):
     disk_partitions = psutil.disk_partitions()
     for partition in disk_partitions:
@@ -29,7 +36,7 @@ async def disk(ctx):
         bedem.add_field(name='Free', value=f'{partition_info.free / (1024*1024*1024):.2f} GB', inline=False)
         await ctx.send(embed=bedem)
 
-@tasks.loop(minutes=1)
+@tasks.loop(hours=1)
 async def stats():
     channel = bot.get_channel(1220667939619864578)
     bedem = discord.Embed(title='Rasberry Pi 4 > Infra Maison', color=0x7289DA)
