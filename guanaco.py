@@ -1,22 +1,27 @@
 import discord, psutil, requests, subprocess, os
 from discord.ext import tasks, commands
+from cbum_commands import CBumCommand
+from crowdsec import CrowdSec
 
 intents = discord.Intents.all()
+
 bot = commands.Bot(command_prefix='g!', intents=intents)
 photo_raspi = "https://i.imgur.com/xnByQbA.png"
+
+#Permet d'aller chercher l'@publique
+try:
+   response = requests.get('https://api.ipify.org/?format=json')
+   public_ip = response.json()['ip']
+except Exception as e:
+   public_ip = 'N/A'
 
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} est connecté.')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="g!cbum"))
+    await bot.add_cog(CBumCommand(bot))
+    await bot.add_cog(CrowdSec(bot))
     stats.start()
-
-@bot.command()
-async def cbum(ctx):
-    photo_cbum = "https://pbs.twimg.com/media/FkCfB1AXwAAO1ae.jpg"
-    bedem = discord.Embed(title='Chris Bumstead', description='Tema la moustache #moustache #idolemoustache', color=0xff4c4c)
-    bedem.set_image(url=photo_cbum)
-    await ctx.send(embed=bedem)
 
 @bot.command()
 async def disk(ctx):
@@ -30,27 +35,9 @@ async def disk(ctx):
         bedem.add_field(name='Free', value=f'{partition_info.free / (1024*1024*1024):.2f} GB', inline=False)
         await ctx.send(embed=bedem)
 
-@bot.command()
-async def csalerts(ctx):
-    try:
-        with open("alerts_output.txt", "w") as file:
-            subprocess.run(['sudo', 'cscli', 'alerts', 'list'], stdout=file, text=True, check=True)
-        with open("alerts_output.txt", "rb") as file:
-            await ctx.send(file=discord.File(file, filename="alerts_output.txt"))
-    except subprocess.CalledProcessError as e:
-        await ctx.send(f"Erreur lors de l'exécution de cscli alerts list : {e}")
-    finally:
-        os.remove("alerts_output.txt")
-
 @tasks.loop(hours=1)
 async def stats():
     channel = bot.get_channel(1220667939619864578)
-    #Permet d'aller chercher l'@publique
-    try:
-        response = requests.get('https://api.ipify.org/?format=json')
-        public_ip = response.json()['ip']
-    except Exception as e:
-        public_ip = 'N/A'
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
@@ -65,4 +52,4 @@ async def stats():
 with open("token.txt", "r") as file:
     TOKEN = file.read().strip()
 
-bot.run(TOKEN)
+bot.run(TOKEN
