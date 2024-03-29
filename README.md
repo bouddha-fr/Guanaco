@@ -2,17 +2,17 @@
 
 ![Guanaco](https://i.imgur.com/KvccnAT.png)
 
-**Remonte les informations sur l'état du CPU, de la RAM ainsi que de l'espace de stockage.
+Remonte les informations sur l'état du CPU, de la RAM ainsi que de l'espace de stockage.
 
 ## Screenshots
 
 - Tâche répétitive.
 
-![loop](https://i.imgur.com/oYDpaaR.png)
+![loop](https://i.imgur.com/TYokAJE.png)
 
 - Commande
 ```
 g!disk
 ```
 
-![loop](https://i.imgur.com/tTrym9v.png)
+![disk](https://i.imgur.com/SqOy2Jn.png)
