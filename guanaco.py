@@ -6,13 +6,6 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='g!', intents=intents)
 photo_raspi = "https://i.imgur.com/xnByQbA.png"
 
-#Permet d'aller chercher l'@publique
-try:
-   response = requests.get('https://api.ipify.org/?format=json')
-   public_ip = response.json()['ip']
-except Exception as e:
-   public_ip = 'N/A'
-
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} est connecté.')
@@ -53,6 +46,12 @@ async def csalerts(ctx):
 @tasks.loop(hours=1)
 async def stats():
     channel = bot.get_channel(1220667939619864578)
+    #Permet d'aller chercher l'@publique
+    try:
+        response = requests.get('https://api.ipify.org/?format=json')
+        public_ip = response.json()['ip']
+    except Exception as e:
+        public_ip = 'N/A'
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
