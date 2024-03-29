@@ -2,7 +2,6 @@ import discord, psutil, requests, subprocess, os
 from discord.ext import tasks, commands
 
 intents = discord.Intents.all()
-
 bot = commands.Bot(command_prefix='g!', intents=intents)
 photo_raspi = "https://i.imgur.com/xnByQbA.png"
 
