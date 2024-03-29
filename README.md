@@ -12,7 +12,10 @@ Remonte les informations sur l'état du CPU, de la RAM ainsi que de l'espace de 
 
 - Commande
 ```
+#Remonte les informations concernant les disques
 g!disk
 ```
-
-![disk](https://i.imgur.com/OOlHJ7Z.png)
+```
+#Récupère les alerts de CrowdSec
+g!csalerts
+```

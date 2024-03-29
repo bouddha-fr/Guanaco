@@ -1,4 +1,4 @@
-import discord, psutil, requests
+import discord, psutil, requests, subprocess, os
 from discord.ext import tasks, commands
 
 intents = discord.Intents.all()
@@ -37,6 +37,18 @@ async def disk(ctx):
         bedem.add_field(name='Utilisé', value=f'{partition_info.used / (1024*1024*1024):.2f} GB', inline=False)
         bedem.add_field(name='Free', value=f'{partition_info.free / (1024*1024*1024):.2f} GB', inline=False)
         await ctx.send(embed=bedem)
+
+@bot.command()
+async def csalerts(ctx):
+    try:
+        with open("alerts_output.txt", "w") as file:
+            subprocess.run(['sudo', 'cscli', 'alerts', 'list'], stdout=file, text=True, check=True)
+        with open("alerts_output.txt", "rb") as file:
+            await ctx.send(file=discord.File(file, filename="alerts_output.txt"))
+    except subprocess.CalledProcessError as e:
+        await ctx.send(f"Erreur lors de l'exécution de cscli alerts list : {e}")
+    finally:
+        os.remove("alerts_output.txt")
 
 @tasks.loop(hours=1)
 async def stats():
