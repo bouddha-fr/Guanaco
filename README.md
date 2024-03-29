@@ -8,15 +8,15 @@
 
 ## Utilités
 
-- Remonte les information sur l'état du CPU et de la RAM
+- Remonte les informations sur l'état du CPU, de la RAM ainsi que de l'espace de stockage.
 
 ## Screenshots
 
-- Tâche répétée
+- Tâche répétitive.
 
 ![loop](https://i.imgur.com/oYDpaaR.png)
 
-- commande
+- Commande
 ```
 g!disk
 ```
