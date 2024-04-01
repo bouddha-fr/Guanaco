@@ -56,4 +56,4 @@ async def stats():
 with open("token.txt", "r") as file:
     TOKEN = file.read().strip()
 
-bot.run(TOKEN
+bot.run(TOKEN)
