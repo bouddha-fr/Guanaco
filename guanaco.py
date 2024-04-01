@@ -8,7 +8,6 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='g!', intents=intents)
 photo_raspi = "https://i.imgur.com/xnByQbA.png"
 
-#Permet d'aller chercher l'@publique
 try:
    response = requests.get('https://api.ipify.org/?format=json')
    public_ip = response.json()['ip']
@@ -26,6 +25,7 @@ async def on_ready():
 @bot.command()
 async def disk(ctx):
     disk_partitions = psutil.disk_partitions()
+
     for partition in disk_partitions:
         partition_info = psutil.disk_usage(partition.mountpoint)
         bedem = discord.Embed(title='Disque', description=f'Espace disque utilisé pour {partition.mountpoint}', color=0xffad31)
@@ -37,10 +37,14 @@ async def disk(ctx):
 
 @tasks.loop(hours=1)
 async def stats():
-    channel = bot.get_channel(1220667939619864578)
+    with open("channel.txt", "r") as file:
+    CHANNEL = file.read().strip()
+
+    channel = bot.get_channel(CHANNEL)
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
+
     bedem = discord.Embed(title='Rasberry Pi 4 > Infra Maison', color=0x7289DA)
     bedem.set_thumbnail(url=photo_raspi)
     bedem.add_field(name='IPv4', value=public_ip, inline=False)
