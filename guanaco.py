@@ -18,7 +18,7 @@ except Exception as e:
 async def on_ready():
     print(f'{bot.user.name} est connecté.')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="g!cbum"))
-    await bot.add_cog(CBumCommand(bot))
+    await bot.add_cog(easteregg(bot))
     await bot.add_cog(CrowdSec(bot))
     stats.start()
 
@@ -37,10 +37,8 @@ async def disk(ctx):
 
 @tasks.loop(hours=1)
 async def stats():
-    with open("channel.txt", "r") as file:
-    CHANNEL = file.read().strip()
+    channel = bot.get_channel(1220667939619864578)
 
-    channel = bot.get_channel(CHANNEL)
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
