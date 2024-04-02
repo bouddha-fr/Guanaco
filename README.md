@@ -1,6 +1,6 @@
 # Guanaco !
 
-![Guanaco](https://i.imgur.com/f7MCcr9.png)
+![Guanaco](https://i.imgur.com/KvccnAT.png)
 
 Bot discord by bouddha
 
@@ -8,7 +8,7 @@ Bot discord by bouddha
 
 - Tâche répétitive.
 
-![loop](https://i.imgur.com/TYokAJE.png)
+![loop](https://i.imgur.com/f7MCcr9.png)
 
 ## Commande
 ```
