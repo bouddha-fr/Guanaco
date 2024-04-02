@@ -1,6 +1,6 @@
 # Guanaco !
 
-![Guanaco](https://i.imgur.com/KvccnAT.png)
+![Guanaco](https://i.imgur.com/f7MCcr9.png)
 
 Bot discord by bouddha
 
