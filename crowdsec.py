@@ -1,7 +1,5 @@
-import discord
+import discord, subprocess, os
 from discord.ext import commands
-import subprocess
-import os
 
 def install_crowdsec_collection(collection_name):
     try:
