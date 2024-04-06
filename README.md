@@ -1,5 +1,5 @@
 # Guanaco !
-killian
+
 ![Guanaco](https://i.imgur.com/tTFerrA.png)
 
 Bot discord by bouddha
