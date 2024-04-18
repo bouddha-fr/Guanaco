@@ -89,7 +89,7 @@ class CrowdSec(commands.Cog):
             await ctx.send("Temps écoulé. Veuillez réessayer.")
 
         try:
-            api_key = "ip_address"
+            api_key = "api_key"
             url = f"https://ipinfo.io/{ip_address}/json?token={api_key}"
             response = requests.get(url)
             data = response.json()
