@@ -75,5 +75,39 @@ class CrowdSec(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("Temps écoulé. Veuillez réessayer.")
 
+    @commands.command()
+    async def ipinfo(self, ctx,):
+        await ctx.send("Veuillez fournir une adresse IP à vérifier.")
+
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel
+
+        try:
+            message = await self.bot.wait_for('message', timeout=60, check=check)
+            ip_address = message.content.strip()
+        except asyncio.TimeoutError:
+            await ctx.send("Temps écoulé. Veuillez réessayer.")
+
+        try:
+            api_key = "60386a77a30e5e"
+            url = f"https://ipinfo.io/{ip_address}/json?token={api_key}"
+            response = requests.get(url)
+            data = response.json()
+
+            country = data.get('country', 'N/A')
+            city = data.get('city', 'N/A')
+            isp = data.get('org', 'N/A')
+            hostname = data.get('hostname', 'N/A')
+
+            embed = discord.Embed(title="Informations sur l'adresse IP", color=0x7289DA)
+            embed.add_field(name="Pays", value=country, inline=False)
+            embed.add_field(name="Ville", value=city, inline=False)
+            embed.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
+            embed.add_field(name="Nom d'hôte", value=hostname, inline=False)
+
+            await ctx.send(embed=embed)
+        except Exception as e:
+            await ctx.send(f"Une erreur s'est produite : {e}")
+
 def setup(bot):
     bot.add_cog(CrowdSec(bot))
