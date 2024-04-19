@@ -63,6 +63,7 @@ class CrowdSec(commands.Cog):
             message = await self.bot.wait_for('message', timeout=60, check=check)
             collection_name = message.content.strip()
             success = install_crowdsec_collection(collection_name)
+
             if success:
                 await ctx.send(f"La collection '{collection_name}' a été installé avec succès !")
                 restart_success = restart_crowdsec()
@@ -71,12 +72,13 @@ class CrowdSec(commands.Cog):
                 else:
                     await ctx.send("Erreur lors du redémarrage du service CrowdSec.")
             else:
+
                 await ctx.send(f"Erreur lors de l'installation de la collection '{collection_name}'.")
         except asyncio.TimeoutError:
             await ctx.send("Temps écoulé. Veuillez réessayer.")
 
     @commands.command()
-    async def ipinfo(self, ctx,):
+    async def cscti(self, ctx):
         await ctx.send("Veuillez fournir une adresse IP à vérifier.")
 
         def check(message):
@@ -90,22 +92,34 @@ class CrowdSec(commands.Cog):
 
         try:
             api_key = "api_key"
-            url = f"https://ipinfo.io/{ip_address}/json?token={api_key}"
-            response = requests.get(url)
-            data = response.json()
+            url = f"https://cti.api.crowdsec.net/v2/smoke/{ip_address}"
+            headers = {
+                "x-api-key": api_key
+            }
 
-            country = data.get('country', 'N/A')
-            city = data.get('city', 'N/A')
-            isp = data.get('org', 'N/A')
-            hostname = data.get('hostname', 'N/A')
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                ip_info = response.json()
+                country = ip_info.get('location', {}).get('country', 'N/A')
+                city = ip_info.get('location', {}).get('city', 'N/A')
+                isp = ip_info.get('as_name', 'N/A')
+                hostname = ip_info.get('hostname', 'N/A')
+                attack_names = [behavior['label'] for behavior in ip_info.get('behaviors', [])]
+                formatted_attack_names = "\n".join(attack_names) if attack_names else "Aucun comportement d'attaque trouvé."
+                attack_details = [attack_details['name'] for attack_details in ip_info.get('attack_details', [])]
+                formatted_attack_details = "\n".join(attack_details) if attack_details else "Aucun détails d'attaque trouvé."
 
-            embed = discord.Embed(title="Informations sur l'adresse IP", color=0x7289DA)
-            embed.add_field(name="Pays", value=country, inline=False)
-            embed.add_field(name="Ville", value=city, inline=False)
-            embed.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
-            embed.add_field(name="Nom d'hôte", value=hostname, inline=False)
+                embed = discord.Embed(title="Informations sur l'adresse IP", color=0x74BFBC)
+                embed.add_field(name="Pays", value=country, inline=False)
+                embed.add_field(name="Ville", value=city, inline=False)
+                embed.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
+                embed.add_field(name="Nom d'hôte", value=hostname, inline=False)
+                embed.add_field(name="Comportements d'attaque", value=formatted_behaviors, inline=False)
+                embed.add_field(name="Détails d'attaque", value=formatted_attack_details, inline=False)
 
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(f"Erreur lors de la récupération des informations pour {ip_address}.")
         except Exception as e:
             await ctx.send(f"Une erreur s'est produite : {e}")
 
