@@ -37,7 +37,7 @@ async def disk(ctx):
 
 @tasks.loop(hours=1)
 async def stats():
-    channel = bot.get_channel(1220667939619864578)
+    channel = bot.get_channel(id_channel)
 
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
