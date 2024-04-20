@@ -1,0 +1,12 @@
+[Unit]
+Description=Guanaco
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory= #chemin d'accès bot
+ExecStart=/chemin/python3 guanaco.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
