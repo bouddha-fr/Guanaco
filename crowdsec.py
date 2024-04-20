@@ -91,7 +91,8 @@ class CrowdSec(commands.Cog):
             await ctx.send("Temps écoulé. Veuillez réessayer.")
 
         try:
-            api_key = "api_key"
+            with open("api_key.txt", "r") as file:
+                api_key = file.read().strip()
             url = f"https://cti.api.crowdsec.net/v2/smoke/{ip_address}"
             headers = {
                 "x-api-key": api_key
