@@ -18,5 +18,5 @@ g!aide
 ```
 g!cshelp
 ```
-![cshelp](https://i.imgur.com/qoKjkcX.png)
+![cshelp](https://i.imgur.com/3T05upL.png)
 

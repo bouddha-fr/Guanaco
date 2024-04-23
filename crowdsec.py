@@ -23,14 +23,14 @@ class CrowdSec(commands.Cog):
 
     @commands.command()
     async def cshelp(self, ctx):
-            embed = discord.Embed(title="CrowdSec Aide", description="Voici la liste des commandes disponibles>
-            embed.set_thumbnail(url=photo_crowdsec)
-            embed.add_field(name="g!csrestart", value="Redémarre CrowdSec", inline=False)
-            embed.add_field(name="g!csalerts", value="Affiche les alertes", inline=False)
-            embed.add_field(name="g!csdécisions", value="Affiche les décisions", inline=False)
-            embed.add_field(name="g!csinstall-collection", value="Permet l'installation d'une collection", inl>
-            embed.add_field(name="g!cscti", value="Affiche les informations concernant une @ip", inline=False)
-            await ctx.send(embed=embed)
+            bedem = discord.Embed(title="CrowdSec Aide", description="Voici la liste des commandes disponibles>
+            bedem.set_thumbnail(url=photo_crowdsec)
+            bedem.add_field(name="g!csrestart", value="Redémarre CrowdSec", inline=False)
+            bedem.add_field(name="g!csalerts", value="Affiche les alertes", inline=False)
+            bedem.add_field(name="g!csdécisions", value="Affiche les décisions", inline=False)
+            bedem.add_field(name="g!csinstall-collection", value="Permet l'installation d'une collection", inl>
+            bedem.add_field(name="g!cscti", value="Affiche les informations concernant une @ip", inline=False)
+            await ctx.send(embed=bedem)
 
 
     @commands.command()

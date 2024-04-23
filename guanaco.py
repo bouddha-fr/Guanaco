@@ -25,11 +25,11 @@ async def on_ready():
 
 @bot.command()
 async def aide(ctx):
-    embed = discord.Embed(title="Aide", description="Voici la liste des commandes disponibles :", color=0x318CE7)
-    embed.set_thumbnail(url=photo_guanaco)
-    embed.add_field(name="g!disk", value="Affiche l'espace disque utilisé", inline=False)
-    embed.add_field(name="g!cshelp", value="Affiche les commandes utilisable pour CrowdSec", inline=False)
-    await ctx.send(embed=embed)
+    bedem = discord.Embed(title="Aide", description="Voici la liste des commandes disponibles :", color=0x318CE7)
+    bedem.set_thumbnail(url=photo_guanaco)
+    bedem.add_field(name="g!disk", value="Affiche l'espace disque utilisé", inline=False)
+    bedem.add_field(name="g!cshelp", value="Affiche les commandes utilisable pour CrowdSec", inline=False)
+    await ctx.send(embed=bedem)
 
 @bot.command()
 async def disk(ctx):
