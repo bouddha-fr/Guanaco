@@ -10,30 +10,13 @@ Bot discord by bouddha
 
 ![loop](https://i.imgur.com/f7MCcr9.png)
 
-## Commande
+## Commandes
 ```
-#Remonte les informations concernant les disques
-g!disk
+g!aide
 ```
+![aide](https://i.imgur.com/RUtvAT8.png)
+```
+g!cshelp
+```
+![cshelp](https://i.imgur.com/qoKjkcX.png)
 
-## Commandes CrowdSec
-```
-#Redémarre CrowdSec
-g!csrestart
-```
-```
-#Récupère les alerts de CrowdSec
-g!csalerts
-```
-```
-#Récupère les decisions de CrowdSec
-g!csdecisions
-```
-```
-#Ajout d'une collection
-g!csinstall_collection
-```
-```
-#CTI
-g!cscti
-```

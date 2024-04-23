@@ -6,6 +6,7 @@ from crowdsec import CrowdSec
 intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix='g!', intents=intents)
+photo_guanaco = "https://i.imgur.com/tTFerrA.png"
 photo_raspi = "https://i.imgur.com/xnByQbA.png"
 
 try:
@@ -21,6 +22,14 @@ async def on_ready():
     await bot.add_cog(easteregg(bot))
     await bot.add_cog(CrowdSec(bot))
     stats.start()
+
+@bot.command()
+async def aide(ctx):
+    embed = discord.Embed(title="Aide", description="Voici la liste des commandes disponibles :", color=0x318CE7)
+    embed.set_thumbnail(url=photo_guanaco)
+    embed.add_field(name="g!disk", value="Affiche l'espace disque utilisé", inline=False)
+    embed.add_field(name="g!cshelp", value="Affiche les commandes utilisable pour CrowdSec", inline=False)
+    await ctx.send(embed=embed)
 
 @bot.command()
 async def disk(ctx):

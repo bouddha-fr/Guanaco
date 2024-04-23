@@ -1,6 +1,8 @@
 import discord, subprocess, os
 from discord.ext import commands
 
+photo_crowdsec = "https://i.imgur.com/BHv5Ho5.png"
+
 def install_crowdsec_collection(collection_name):
     try:
         subprocess.run(['sudo', 'cscli', 'collections', 'install', collection_name], check=True)
@@ -18,6 +20,18 @@ def restart_crowdsec():
 class CrowdSec(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command()
+    async def cshelp(self, ctx):
+            embed = discord.Embed(title="CrowdSec Aide", description="Voici la liste des commandes disponibles>
+            embed.set_thumbnail(url=photo_crowdsec)
+            embed.add_field(name="g!csrestart", value="Redémarre CrowdSec", inline=False)
+            embed.add_field(name="g!csalerts", value="Affiche les alertes", inline=False)
+            embed.add_field(name="g!csdécisions", value="Affiche les décisions", inline=False)
+            embed.add_field(name="g!csinstall-collection", value="Permet l'installation d'une collection", inl>
+            embed.add_field(name="g!cscti", value="Affiche les informations concernant une @ip", inline=False)
+            await ctx.send(embed=embed)
+
 
     @commands.command()
     async def csrestart(self, ctx):
@@ -110,7 +124,8 @@ class CrowdSec(commands.Cog):
                 attack_details = [attack_details['name'] for attack_details in ip_info.get('attack_details', [])]
                 formatted_attack_details = "\n".join(attack_details) if attack_details else "Aucun détails d'attaque trouvé."
 
-                embed = discord.Embed(title="Informations sur l'adresse IP", color=0x74BFBC)
+                embed = discord.Embed(title="Informations sur l'adresse IP", color=0x4D4A9A)
+                embed.set_thumbnail(url=photo_crowdsec)
                 embed.add_field(name="Pays", value=country, inline=False)
                 embed.add_field(name="Ville", value=city, inline=False)
                 embed.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
