@@ -1,4 +1,5 @@
-import discord, subprocess, os
+  GNU nano 7.2                                                                                                                                                                                                               crowdsec.py                                                                                                                                                                                                                        
+import discord, subprocess, os, requests, json
 from discord.ext import commands
 
 photo_crowdsec = "https://i.imgur.com/BHv5Ho5.png"
@@ -23,15 +24,14 @@ class CrowdSec(commands.Cog):
 
     @commands.command()
     async def cshelp(self, ctx):
-            bedem = discord.Embed(title="CrowdSec Aide", description="Voici la liste des commandes disponibles>
+            bedem = discord.Embed(title="CrowdSec Aide", description="Voici la liste des commandes disponibles :", color=0xF8AB17)
             bedem.set_thumbnail(url=photo_crowdsec)
             bedem.add_field(name="g!csrestart", value="Redémarre CrowdSec", inline=False)
             bedem.add_field(name="g!csalerts", value="Affiche les alertes", inline=False)
             bedem.add_field(name="g!csdécisions", value="Affiche les décisions", inline=False)
-            bedem.add_field(name="g!csinstall-collection", value="Permet l'installation d'une collection", inl>
+            bedem.add_field(name="g!csinstall_collection", value="Permet l'installation d'une collection", inline=False)
             bedem.add_field(name="g!cscti", value="Affiche les informations concernant une @ip", inline=False)
             await ctx.send(embed=bedem)
-
 
     @commands.command()
     async def csrestart(self, ctx):
@@ -77,7 +77,6 @@ class CrowdSec(commands.Cog):
             message = await self.bot.wait_for('message', timeout=60, check=check)
             collection_name = message.content.strip()
             success = install_crowdsec_collection(collection_name)
-
             if success:
                 await ctx.send(f"La collection '{collection_name}' a été installé avec succès !")
                 restart_success = restart_crowdsec()
@@ -86,7 +85,6 @@ class CrowdSec(commands.Cog):
                 else:
                     await ctx.send("Erreur lors du redémarrage du service CrowdSec.")
             else:
-
                 await ctx.send(f"Erreur lors de l'installation de la collection '{collection_name}'.")
         except asyncio.TimeoutError:
             await ctx.send("Temps écoulé. Veuillez réessayer.")
@@ -105,8 +103,9 @@ class CrowdSec(commands.Cog):
             await ctx.send("Temps écoulé. Veuillez réessayer.")
 
         try:
-            with open("api_key.txt", "r") as file:
-                api_key = file.read().strip()
+            with open("credentials.json", "r") as f:
+                credentials = json.load(f)
+                api_key = credentials["crowdsec"]["api_key"]
             url = f"https://cti.api.crowdsec.net/v2/smoke/{ip_address}"
             headers = {
                 "x-api-key": api_key
@@ -119,20 +118,21 @@ class CrowdSec(commands.Cog):
                 city = ip_info.get('location', {}).get('city', 'N/A')
                 isp = ip_info.get('as_name', 'N/A')
                 hostname = ip_info.get('hostname', 'N/A')
-                attack_names = [behavior['label'] for behavior in ip_info.get('behaviors', [])]
-                formatted_attack_names = "\n".join(attack_names) if attack_names else "Aucun comportement d'attaque trouvé."
+                behaviors = [behavior['name'] for behavior in ip_info.get('behaviors', [])]
+                formatted_behaviors = "\n".join(behaviors) if behaviors else "Aucun comportement d'attaque trouvé."
                 attack_details = [attack_details['name'] for attack_details in ip_info.get('attack_details', [])]
                 formatted_attack_details = "\n".join(attack_details) if attack_details else "Aucun détails d'attaque trouvé."
 
-                bedem = discord.Embed(title="Informations sur l'adresse IP", color=0x4D4A9A)
-                bedem.set_thumbnail(url=photo_crowdsec)
-                bedem.add_field(name="Pays", value=country, inline=False)
-                bedem.add_field(name="Ville", value=city, inline=False)
-                bedem.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
-                bedem.add_field(name="Nom d'hôte", value=hostname, inline=False)
-                bedem.add_field(name="Comportements d'attaque", value=formatted_behaviors, inline=False)
-                bedem.add_field(name="Détails d'attaque", value=formatted_attack_details, inline=False)
-                await ctx.send(embed=bedem)
+                embed = discord.Embed(title="Informations sur l'adresse IP", color=0x4D4A9A)
+                embed.set_thumbnail(url=photo_crowdsec)
+                embed.add_field(name="Pays", value=country, inline=False)
+                embed.add_field(name="Ville", value=city, inline=False)
+                embed.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
+                embed.add_field(name="Nom d'hôte", value=hostname, inline=False)
+                embed.add_field(name="Comportements d'attaque", value=formatted_behaviors, inline=False)
+                embed.add_field(name="Détails d'attaque", value=formatted_attack_details, inline=False)
+
+                await ctx.send(embed=embed)
             else:
                 await ctx.send(f"Erreur lors de la récupération des informations pour {ip_address}.")
         except Exception as e:

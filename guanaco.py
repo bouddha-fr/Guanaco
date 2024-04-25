@@ -1,13 +1,14 @@
-import discord, psutil, requests, subprocess, os
+  GNU nano 7.2                                                                                                                      guanaco.py                                                                                                                               
+import discord, psutil, requests, subprocess, os, json
 from discord.ext import tasks, commands
-from easteregg import easteregg
 from crowdsec import CrowdSec
+from easteregg import easteregg
 
 intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix='g!', intents=intents)
-photo_guanaco = "https://i.imgur.com/tTFerrA.png"
 photo_raspi = "https://i.imgur.com/xnByQbA.png"
+photo_guanaco = "https://i.imgur.com/tTFerrA.png"
 
 try:
    response = requests.get('https://api.ipify.org/?format=json')
@@ -19,8 +20,8 @@ except Exception as e:
 async def on_ready():
     print(f'{bot.user.name} est connecté.')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="g!cbum"))
-    await bot.add_cog(easteregg(bot))
     await bot.add_cog(CrowdSec(bot))
+    await bot.add_cog(easteregg(bot))
     stats.start()
 
 @bot.command()
@@ -46,9 +47,10 @@ async def disk(ctx):
 
 @tasks.loop(hours=1)
 async def stats():
-    with open("channel_id.txt", "r") as file:
-        channel_id = int(file.read().strip())
-    channel = bot.get_channel(channel_id)
+    with open("credentials.json", "r") as f:
+        credentials = json.load(f)
+        discord_id = int(credentials["discord"]["id"])
+    channel = bot.get_channel(discord_id)
 
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
@@ -62,7 +64,8 @@ async def stats():
     bedem.add_field(name='RAM disponible', value=f'{available_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     await channel.send(embed=bedem)
 
-with open("token.txt", "r") as file:
-    TOKEN = file.read().strip()
+with open("credentials.json", "r") as f:
+    credentials = json.load(f)
+    discord_token = credentials["discord"]["token"]
 
-bot.run(TOKEN)
+bot.run(discord_token)
