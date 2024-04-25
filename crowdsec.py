@@ -1,4 +1,3 @@
-  GNU nano 7.2                                                                                                                                                                                                               crowdsec.py                                                                                                                                                                                                                        
 import discord, subprocess, os, requests, json
 from discord.ext import commands
 

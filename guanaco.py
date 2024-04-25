@@ -1,4 +1,3 @@
-  GNU nano 7.2                                                                                                                      guanaco.py                                                                                                                               
 import discord, psutil, requests, subprocess, os, json
 from discord.ext import tasks, commands
 from crowdsec import CrowdSec
