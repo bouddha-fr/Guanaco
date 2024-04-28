@@ -101,8 +101,9 @@ class CrowdSec(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("Temps écoulé. Veuillez réessayer.")
 
+        credentials_path = os.path.join(os.path.dirname(__file__), "..", "credentials.json")
         try:
-            with open("credentials.json", "r") as f:
+            with open(credentials_path, "r") as f:
                 credentials = json.load(f)
                 api_key = credentials["crowdsec"]["api_key"]
             url = f"https://cti.api.crowdsec.net/v2/smoke/{ip_address}"

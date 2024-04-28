@@ -1,6 +1,6 @@
 import discord, psutil, requests, subprocess, os, json
 from discord.ext import tasks, commands
-from crowdsec import CrowdSec
+from CrowdSec.crowdsec import CrowdSec
 from easteregg import easteregg
 
 intents = discord.Intents.all()
@@ -55,8 +55,17 @@ async def stats():
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
+    network_info = psutil.net_io_counters()
+    network_message = f'Débit entrant : {network_info.bytes_recv / (1024**2):.2f} MB\nDébit sortant : {network_info.bytes_sent / (1024**2):.2f} MB'
+    cpu_temperature = psutil.sensors_temperatures()
+    if "cpu-thermal" in cpu_temperature:
+        cpu_temp = cpu_temperature["cpu-thermal"][0].current
+    else:
+        cpu_temp = 'N/A'
+    active_connections = psutil.net_connections()
+    num_active_connections = len(active_connections)
 
-    bedem = create_embed(used_gb, available_gb, total_gb)
+    bedem = create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num_active_connections)
     await channel.send(embed=bedem)
 
 @bot.command()
@@ -64,15 +73,27 @@ async def infos(ctx):
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
+    network_info = psutil.net_io_counters()
+    network_message = f'Débit entrant : {network_info.bytes_recv / (1024**2):.2f} MB\nDébit sortant : {network_info.bytes_sent / (1024**2):.2f} MB'
+    cpu_temperature = psutil.sensors_temperatures()
+    if "cpu-thermal" in cpu_temperature:
+        cpu_temp = cpu_temperature["cpu-thermal"][0].current
+    else:
+        cpu_temp = 'N/A'
+    active_connections = psutil.net_connections()
+    num_active_connections = len(active_connections)
 
-    bedem = create_embed(used_gb, available_gb, total_gb)
+    bedem = create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num_active_connections)
     await ctx.send(embed=bedem)
 
-def create_embed(used_gb, available_gb, total_gb):
+def create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num_active_connections):
     bedem = discord.Embed(title='Rasberry Pi 4 > Infra Maison', color=0x7289DA)
     bedem.set_thumbnail(url=photo_raspi)
     bedem.add_field(name='IPv4', value=public_ip, inline=False)
     bedem.add_field(name='Utilisation CPU', value=f'{psutil.cpu_percent()}%', inline=False)
+    bedem.add_field(name='Température CPU', value=f'{cpu_temp} °C', inline=False)
+    bedem.add_field(name='Débit Réseau', value=network_message, inline=False)
+    bedem.add_field(name='Connexions Actives', value=num_active_connections, inline=False)
     bedem.add_field(name='Utilisation RAM', value=f'{used_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     bedem.add_field(name='RAM disponible', value=f'{available_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     return bedem
