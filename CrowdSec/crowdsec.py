@@ -122,17 +122,19 @@ class CrowdSec(commands.Cog):
                 formatted_behaviors = "\n".join(behaviors) if behaviors else "Aucun comportement d'attaque trouvé."
                 attack_details = [attack_details['name'] for attack_details in ip_info.get('attack_details', [])]
                 formatted_attack_details = "\n".join(attack_details) if attack_details else "Aucun détails d'attaque trouvé."
+                mitre_techniques = [mitre_techniques['label'] for mitre_techniques in ip_info.get('mitre_techniques', [])]
+                formatted_mitre_techniques = "\n".join(mitre_techniques) if mitre_techniques else "Aucune techniques trouvé."
 
-                embed = discord.Embed(title="Informations sur l'adresse IP", color=0x4D4A9A)
-                embed.set_thumbnail(url=photo_crowdsec)
-                embed.add_field(name="Pays", value=country, inline=False)
-                embed.add_field(name="Ville", value=city, inline=False)
-                embed.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
-                embed.add_field(name="Nom d'hôte", value=hostname, inline=False)
-                embed.add_field(name="Comportements d'attaque", value=formatted_behaviors, inline=False)
-                embed.add_field(name="Détails d'attaque", value=formatted_attack_details, inline=False)
-
-                await ctx.send(embed=embed)
+                bedem = discord.Embed(title="Informations sur l'adresse IP", color=0x4D4A9A)
+                bedem.set_thumbnail(url=photo_crowdsec)
+                bedem.add_field(name="Pays", value=country, inline=False)
+                bedem.add_field(name="Ville", value=city, inline=False)
+                bedem.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
+                bedem.add_field(name="Nom d'hôte", value=hostname, inline=False)
+                bedem.add_field(name="Comportements d'attaque", value=formatted_behaviors, inline=False)
+                bedem.add_field(name="Détails d'attaque", value=formatted_attack_details, inline=False)
+                bedem.add_field(name="Mitre techniques", value=formatted_mitre_techniques, inline=False)
+                await ctx.send(embed=bedem)
             else:
                 await ctx.send(f"Erreur lors de la récupération des informations pour {ip_address}.")
         except Exception as e:
