@@ -27,6 +27,7 @@ async def on_ready():
 async def aide(ctx):
     bedem = discord.Embed(title="Aide", description="Voici la liste des commandes disponibles :", color=0x318CE7)
     bedem.set_thumbnail(url=photo_guanaco)
+    bedem.add_field(name="g!infos", value="Affiche l'état d'utilisation du CPU et de la RAM", inline=False)
     bedem.add_field(name="g!disk", value="Affiche l'espace disque utilisé", inline=False)
     bedem.add_field(name="g!cshelp", value="Affiche les commandes utilisable pour CrowdSec", inline=False)
     await ctx.send(embed=bedem)
@@ -55,13 +56,26 @@ async def stats():
     available_gb = psutil.virtual_memory().available / (1024**3)
     total_gb = psutil.virtual_memory().total / (1024**3)
 
+    bedem = create_embed(used_gb, available_gb, total_gb)
+    await channel.send(embed=bedem)
+
+@bot.command()
+async def infos(ctx):
+    used_gb = psutil.virtual_memory().used / (1024**3)
+    available_gb = psutil.virtual_memory().available / (1024**3)
+    total_gb = psutil.virtual_memory().total / (1024**3)
+
+    bedem = create_embed(used_gb, available_gb, total_gb)
+    await ctx.send(embed=bedem)
+
+def create_embed(used_gb, available_gb, total_gb):
     bedem = discord.Embed(title='Rasberry Pi 4 > Infra Maison', color=0x7289DA)
     bedem.set_thumbnail(url=photo_raspi)
     bedem.add_field(name='IPv4', value=public_ip, inline=False)
     bedem.add_field(name='Utilisation CPU', value=f'{psutil.cpu_percent()}%', inline=False)
     bedem.add_field(name='Utilisation RAM', value=f'{used_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     bedem.add_field(name='RAM disponible', value=f'{available_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
-    await channel.send(embed=bedem)
+    return bedem
 
 with open("credentials.json", "r") as f:
     credentials = json.load(f)
