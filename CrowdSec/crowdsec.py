@@ -114,10 +114,11 @@ class CrowdSec(commands.Cog):
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 ip_info = response.json()
+                ip = ip_info.get('ip', 'N/A')
+                reputation = ip_info.get('reputation', 'N/A')
                 country = ip_info.get('location', {}).get('country', 'N/A')
                 city = ip_info.get('location', {}).get('city', 'N/A')
                 isp = ip_info.get('as_name', 'N/A')
-                hostname = ip_info.get('hostname', 'N/A')
                 behaviors = [behavior['name'] for behavior in ip_info.get('behaviors', [])]
                 formatted_behaviors = "\n".join(behaviors) if behaviors else "Aucun comportement d'attaque trouvé."
                 attack_details = [attack_details['name'] for attack_details in ip_info.get('attack_details', [])]
@@ -127,10 +128,11 @@ class CrowdSec(commands.Cog):
 
                 bedem = discord.Embed(title="Informations sur l'adresse IP", color=0x4D4A9A)
                 bedem.set_thumbnail(url=photo_crowdsec)
+                bedem.add_field(name="Ipv4", value=ip, inline=False)
+                bedem.add_field(name="Réputation", value=reputation, inline=False)
                 bedem.add_field(name="Pays", value=country, inline=False)
                 bedem.add_field(name="Ville", value=city, inline=False)
                 bedem.add_field(name="Fournisseur de services Internet", value=isp, inline=False)
-                bedem.add_field(name="Nom d'hôte", value=hostname, inline=False)
                 bedem.add_field(name="Comportements d'attaque", value=formatted_behaviors, inline=False)
                 bedem.add_field(name="Détails d'attaque", value=formatted_attack_details, inline=False)
                 bedem.add_field(name="Mitre techniques", value=formatted_mitre_techniques, inline=False)
