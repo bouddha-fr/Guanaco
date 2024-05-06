@@ -22,6 +22,7 @@ async def on_ready():
     await bot.add_cog(CrowdSec(bot))
     await bot.add_cog(easteregg(bot))
     stats.start()
+    check_cpu_usage.start()
 
 @bot.command()
 async def aide(ctx):
@@ -49,8 +50,8 @@ async def disk(ctx):
 async def stats():
     with open("credentials.json", "r") as f:
         credentials = json.load(f)
-        discord_id = int(credentials["discord"]["id"])
-    channel = bot.get_channel(discord_id)
+        guanaco_id = int(credentials["discord"]["guanaco"])
+    channel_guanaco = bot.get_channel(guanaco_id)
 
     used_gb = psutil.virtual_memory().used / (1024**3)
     available_gb = psutil.virtual_memory().available / (1024**3)
@@ -66,7 +67,7 @@ async def stats():
     num_active_connections = len(active_connections)
 
     bedem = create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num_active_connections)
-    await channel.send(embed=bedem)
+    await channel_guanaco.send(embed=bedem)
 
 @bot.command()
 async def infos(ctx):
@@ -97,6 +98,18 @@ def create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num
     bedem.add_field(name='Utilisation RAM', value=f'{used_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     bedem.add_field(name='RAM disponible', value=f'{available_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     return bedem
+
+@tasks.loop(minutes=1)
+async def check_cpu_usage():
+    with open("credentials.json", "r") as f:
+        credentials = json.load(f)
+        alerts_cpu = int(credentials["discord"]["alerts"])
+
+    cpu_percent = psutil.cpu_percent()
+    if cpu_percent > 20:
+        channel_alerts = bot.get_channel(alerts_cpu)
+        await channel_alerts.send(f"```Attention ! L'utilisation du CPU est actuellement à {cpu_percent}%```")
+
 
 with open("credentials.json", "r") as f:
     credentials = json.load(f)
