@@ -1,1 +1,11 @@
 easteregg.py
+package.json
+__pycache__
+pyvenv.cfg
+
+bin/
+lib/
+lib64/
+node_modules/
+include/
+
