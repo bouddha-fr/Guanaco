@@ -99,6 +99,10 @@ def create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num
     bedem.add_field(name='RAM disponible', value=f'{available_gb:.1f} GB / {total_gb:.1f} GB', inline=False)
     return bedem
 
+@bot.command(name='git')
+async def git(ctx):
+    await ctx.send('https://github.com/bouddha-fr/Guanaco')
+
 @tasks.loop(minutes=1)
 async def check_cpu_usage():
     with open("credentials.json", "r") as f:
