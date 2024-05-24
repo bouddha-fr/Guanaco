@@ -1,5 +1,6 @@
-import discord, psutil, requests, subprocess, os, json
+import discord, psutil, requests, subprocess, os, json, asyncio
 from discord.ext import tasks, commands
+from datetime import datetime
 from CrowdSec.crowdsec import CrowdSec
 from easteregg import easteregg
 
@@ -22,7 +23,7 @@ async def on_ready():
     await bot.add_cog(CrowdSec(bot))
     await bot.add_cog(easteregg(bot))
     stats.start()
-    check_cpu_usage.start()
+    bot.loop.create_task(monitor_system())
 
 @bot.command()
 async def aide(ctx):
@@ -103,16 +104,40 @@ def create_embed(used_gb, available_gb, total_gb, cpu_temp, network_message, num
 async def git(ctx):
     await ctx.send('https://github.com/bouddha-fr/Guanaco')
 
-@tasks.loop(minutes=1)
-async def check_cpu_usage():
+async def monitor_system():
+    await bot.wait_until_ready()
     with open("credentials.json", "r") as f:
         credentials = json.load(f)
-        alerts_cpu = int(credentials["discord"]["alerts"])
+        guanaco_alerts = int(credentials["discord"]["alerts"])
+    guanaco_alerts = bot.get_channel(guanaco_alerts)
+    if guanaco_alerts is None:
+        print(f"Channel with ID {CHANNEL_ID} not found.")
+        return
 
-    cpu_percent = psutil.cpu_percent()
-    if cpu_percent > 20:
-        channel_alerts = bot.get_channel(alerts_cpu)
-        await channel_alerts.send(f"```Attention ! L'utilisation du CPU est actuellement à {cpu_percent}%```")
+    while not bot.is_closed():
+        cpu_usage = psutil.cpu_percent(interval=1)
+        ram_usage = psutil.virtual_memory().percent
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        if cpu_usage > 50:
+            await guanaco_alerts.send(f"**Alerte** : Utilisation de `system.cpu` élevée : *{cpu_usage}%*")
+            bedem = discord.Embed(title='Central Proccessing Unit', color=0xe74c3c)
+            bedem.set_thumbnail(url='https://i.imgur.com/PjKUyLV.png')
+            bedem.add_field(name='', value=f'`system.cpu`', inline=False)
+            bedem.add_field(name='', value=f'*{cpu_usage}%*', inline=False)
+            bedem.add_field(name='', value=current_time, inline=False)
+            await guanaco_alerts.send(embed=bedem)
+
+        if ram_usage > 50:
+            await guanaco_alerts.send(f"**Alerte** : Utilisation de `system.ram` élevée : *{ram_usage}%*")
+            bedem = discord.Embed(title='Random Access Memory', color=0xe74c3c)
+            bedem.set_thumbnail(url='https://i.imgur.com/PjKUyLV.png')
+            bedem.add_field(name='', value=f'`system.ram`', inline=False)
+            bedem.add_field(name='', value=f'*{ram_usage}%*', inline=False)
+            bedem.add_field(name='', value=current_time, inline=False)
+            await guanaco_alerts.send(embed=bedem)
+
+        await asyncio.sleep(60)
 
 
 with open("credentials.json", "r") as f:
